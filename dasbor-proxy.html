@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" id="html" class="scroll-auto scrollbar-hide dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DASBOR PROXY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom scrollbar */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Custom scrollbar for horizontal scroll */
+        .scrollbar-thin::-webkit-scrollbar {
+            height: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+            border-radius: 3px;
+        }
+        
+        /* Gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .gradient-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-button {
+            background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+            transition: all 0.3s ease;
+        }
+        
+        .gradient-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        /* Pulse animation for ping */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        /* Flag hover effect */
+        .flag-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .flag-hover:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+        
+        /* Notification slide in */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .slide-in {
+            animation: slideInRight 0.5s ease-out;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'selector',
+            theme: {
+                extend: {
+                    colors: {
+                        'luxury': {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
+    <!-- Notification -->
+    <div id="notification-badge" class="fixed z-50 opacity-0 transition-all duration-500 mt-4 mr-4 right-0 p-4 max-w-sm glass rounded-2xl flex items-center gap-4 slide-in">
+        <div class="shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#22c55e" class="size-6">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div>
+            <div class="text-lg font-bold text-green-400">Berhasil!</div>
+            <p class="text-sm text-gray-300">Akun berhasil disalin ke clipboard</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="gradient-bg p-6 shadow-2xl">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+                🌟 DASBOR PROXY 🌟
+            </h1>
+            <p class="text-center text-gray-200 text-lg">Premium Proxy Management Dashboard</p>
+        </div>
+    </header>
+
+    <!-- Country Flags Section -->
+    <section class="py-6 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">🌍 Pilih Negara</h2>
+            <div class="glass rounded-2xl p-4">
+                <!-- Row 1 -->
+                <div class="flex gap-4 overflow-x-auto scrollbar-thin pb-2 mb-4">
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/id.svg" alt="Indonesia" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Indonesia</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/sg.svg" alt="Singapore" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Singapore</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" alt="United States" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">USA</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/jp.svg" alt="Japan" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Japan</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/kr.svg" alt="South Korea" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Korea</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/gb.svg" alt="United Kingdom" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">UK</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/de.svg" alt="Germany" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Germany</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/fr.svg" alt="France" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">France</p>
+                    </div>
+                </div>
+                
+                <!-- Row 2 -->
+                <div class="flex gap-4 overflow-x-auto scrollbar-thin pb-2">
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/ca.svg" alt="Canada" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Canada</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/au.svg" alt="Australia" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Australia</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/nl.svg" alt="Netherlands" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Netherlands</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/ch.svg" alt="Switzerland" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Switzerland</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/se.svg" alt="Sweden" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Sweden</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/no.svg" alt="Norway" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Norway</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/dk.svg" alt="Denmark" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Denmark</p>
+                    </div>
+                    <div class="flag-item flex-shrink-0 text-center">
+                        <div class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/fi.svg" alt="Finland" class="w-full h-full object-cover" />
+                        </div>
+                        <p class="text-xs mt-1 text-gray-300">Finland</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Proxy Information Section -->
+    <section class="py-6 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">🚀 Server Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Sample Proxy Cards -->
+                <div class="gradient-card rounded-2xl p-6 float-animation">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <img src="https://hatscripts.github.io/circle-flags/flags/sg.svg" alt="Singapore" class="w-8 h-8 rounded-full" />
+                            <div>
+                                <h3 class="font-bold text-lg">Singapore Premium</h3>
+                                <p class="text-sm text-gray-400">Cloudflare Inc.</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div id="ping-1" class="text-sm font-semibold text-green-400 pulse-glow">Checking...</div>
+                        </div>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">IP Address:</span>
+                            <span class="font-mono text-sm">104.21.45.67</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Port:</span>
+                            <span class="font-mono text-sm">443</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Status:</span>
+                            <span class="text-green-400 font-semibold">🟢 Active</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Protocol Selection -->
+                    <div class="mb-4">
+                        <div class="flex gap-2 mb-2">
+                            <button class="protocol-btn gradient-button text-white px-4 py-2 rounded-lg text-sm font-semibold" data-protocol="vless">
+                                🔒 VLESS
+                            </button>
+                            <button class="protocol-btn bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold" data-protocol="trojan">
+                                🛡️ TROJAN
+                            </button>
+                        </div>
+                        
+                        <!-- VLESS Options -->
+                        <div id="vless-options-1" class="protocol-options hidden">
+                            <div class="flex gap-2">
+                                <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="vless-tls" data-config="vless://uuid@104.21.45.67:443?encryption=none&security=tls&type=ws&host=example.com&path=/path#Singapore%20VLESS%20TLS">
+                                    🔐 TLS
+                                </button>
+                                <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="vless-ntls" data-config="vless://uuid@104.21.45.67:80?encryption=none&security=none&type=ws&host=example.com&path=/path#Singapore%20VLESS%20NTLS">
+                                    🔓 NTLS
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- TROJAN Options -->
+                        <div id="trojan-options-1" class="protocol-options hidden">
+                            <div class="flex gap-2">
+                                <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="trojan-tls" data-config="trojan://password@104.21.45.67:443?security=tls&type=ws&host=example.com&path=/path#Singapore%20TROJAN%20TLS">
+                                    🔐 TLS
+                                </button>
+                                <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="trojan-ntls" data-config="trojan://password@104.21.45.67:80?security=none&type=ws&host=example.com&path=/path#Singapore%20TROJAN%20NTLS">
+                                    🔓 NTLS
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More proxy cards would be added here dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Account Management Section -->
+    <section class="py-6 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">📋 Akun yang Sudah Dibuat</h2>
+            <div class="glass rounded-2xl p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-600">
+                                <th class="text-left py-3 px-4">No</th>
+                                <th class="text-left py-3 px-4">Negara</th>
+                                <th class="text-left py-3 px-4">Protokol</th>
+                                <th class="text-left py-3 px-4">IP:Port</th>
+                                <th class="text-left py-3 px-4">Status</th>
+                                <th class="text-left py-3 px-4">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="account-list">
+                            <tr class="border-b border-gray-700">
+                                <td class="py-3 px-4">1</td>
+                                <td class="py-3 px-4 flex items-center gap-2">
+                                    <img src="https://hatscripts.github.io/circle-flags/flags/sg.svg" alt="SG" class="w-5 h-5" />
+                                    Singapore
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="bg-purple-600 px-2 py-1 rounded text-xs">VLESS TLS</span>
+                                </td>
+                                <td class="py-3 px-4 font-mono">104.21.45.67:443</td>
+                                <td class="py-3 px-4">
+                                    <span class="text-green-400">🟢 Active</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <button class="copy-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs" data-config="vless://uuid@104.21.45.67:443?encryption=none&security=tls&type=ws&host=example.com&path=/path#Singapore%20VLESS%20TLS">
+                                        Copy
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-700">
+                                <td class="py-3 px-4">2</td>
+                                <td class="py-3 px-4 flex items-center gap-2">
+                                    <img src="https://hatscripts.github.io/circle-flags/flags/us.svg" alt="US" class="w-5 h-5" />
+                                    United States
+                                </td>
+                                <td class="py-3 px-4">
+                                    <span class="bg-red-600 px-2 py-1 rounded text-xs">TROJAN NTLS</span>
+                                </td>
+                                <td class="py-3 px-4 font-mono">1.1.1.1:80</td>
+                                <td class="py-3 px-4">
+                                    <span class="text-green-400">🟢 Active</span>
+                                </td>
+                                <td class="py-3 px-4">
+                                    <button class="copy-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs" data-config="trojan://password@1.1.1.1:80?security=none&type=ws&host=example.com&path=/path#USA%20TROJAN%20NTLS">
+                                        Copy
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Traffic Chart Section -->
+    <section class="py-6 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">📊 Grafik Lalu Lintas</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Traffic Chart -->
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-center">📈 Traffic Usage (24h)</h3>
+                    <canvas id="trafficChart" width="400" height="200"></canvas>
+                </div>
+                
+                <!-- Connection Stats -->
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-center">🔗 Connection Statistics</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Total Connections:</span>
+                            <span class="text-2xl font-bold text-green-400">1,247</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Active Now:</span>
+                            <span class="text-2xl font-bold text-blue-400">89</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Data Transferred:</span>
+                            <span class="text-2xl font-bold text-purple-400">2.4 TB</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Uptime:</span>
+                            <span class="text-2xl font-bold text-yellow-400">99.9%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="gradient-bg py-8 mt-12">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-300">© 2024 DASBOR PROXY - Premium Proxy Management</p>
+            <p class="text-sm text-gray-400 mt-2">Powered by Cloudflare Workers</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Chart.js
+        const ctx = document.getElementById('trafficChart').getContext('2d');
+        const trafficChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+                datasets: [{
+                    label: 'VLESS Traffic (GB)',
+                    data: [12, 19, 3, 5, 2, 3, 15],
+                    borderColor: 'rgb(139, 92, 246)',
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'TROJAN Traffic (GB)',
+                    data: [2, 3, 20, 5, 1, 4, 8],
+                    borderColor: 'rgb(6, 182, 212)',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'white'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'white'
+                        },
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Protocol selection functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Protocol buttons
+            const protocolBtns = document.querySelectorAll('.protocol-btn');
+            protocolBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const protocol = this.dataset.protocol;
+                    const card = this.closest('.gradient-card');
+                    
+                    // Reset all buttons in this card
+                    card.querySelectorAll('.protocol-btn').forEach(b => {
+                        b.classList.remove('gradient-button');
+                        b.classList.add('bg-gray-600');
+                    });
+                    
+                    // Activate clicked button
+                    this.classList.remove('bg-gray-600');
+                    this.classList.add('gradient-button');
+                    
+                    // Show/hide options
+                    card.querySelectorAll('.protocol-options').forEach(opt => {
+                        opt.classList.add('hidden');
+                    });
+                    
+                    const optionsId = protocol + '-options-' + card.id.split('-')[1];
+                    const options = document.getElementById(optionsId);
+                    if (options) {
+                        options.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Copy functionality
+            const copyBtns = document.querySelectorAll('.copy-btn');
+            copyBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const config = this.dataset.config;
+                    navigator.clipboard.writeText(config).then(() => {
+                        showNotification();
+                    });
+                });
+            });
+
+            // Flag selection
+            const flagItems = document.querySelectorAll('.flag-item');
+            flagItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove active state from all flags
+                    flagItems.forEach(f => f.classList.remove('ring-4', 'ring-purple-400'));
+                    // Add active state to clicked flag
+                    this.classList.add('ring-4', 'ring-purple-400');
+                    
+                    // Here you would typically filter proxies by country
+                    console.log('Selected country:', this.querySelector('p').textContent);
+                });
+            });
+
+            // Simulate ping checking
+            simulatePingCheck();
+        });
+
+        function showNotification() {
+            const notification = document.getElementById('notification-badge');
+            notification.classList.remove('opacity-0');
+            setTimeout(() => {
+                notification.classList.add('opacity-0');
+            }, 3000);
+        }
+
+        function simulatePingCheck() {
+            const pingElements = document.querySelectorAll('[id^="ping-"]');
+            pingElements.forEach((element, index) => {
+                setTimeout(() => {
+                    const ping = Math.floor(Math.random() * 50) + 10;
+                    element.textContent = `${ping}ms`;
+                    element.classList.remove('pulse-glow');
+                }, index * 1000);
+            });
+        }
+
+        // Dark mode toggle (if needed)
+        function toggleDarkMode() {
+            const html = document.getElementById('html');
+            html.classList.toggle('dark');
+        }
+    </script>
+</body>
+</html>
