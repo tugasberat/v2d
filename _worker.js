@@ -1080,90 +1080,245 @@ let baseHTML = `
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Proxy List</title>
+    <title>DASBOR PROXY</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-      /* For Webkit-based browsers (Chrome, Safari and Opera) */
+      /* Custom scrollbar */
       .scrollbar-hide::-webkit-scrollbar {
           display: none;
       }
-
-      /* For IE, Edge and Firefox */
       .scrollbar-hide {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      /* Custom scrollbar for horizontal scroll */
+      .scrollbar-thin::-webkit-scrollbar {
+          height: 6px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 3px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb {
+          background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+          border-radius: 3px;
+      }
+      
+      /* Gradient backgrounds */
+      .gradient-bg {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      
+      .gradient-card {
+          background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .gradient-button {
+          background: linear-gradient(45deg, #8b5cf6, #06b6d4);
+          transition: all 0.3s ease;
+      }
+      
+      .gradient-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+      }
+      
+      /* Glassmorphism effect */
+      .glass {
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      /* Animation */
+      @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+      }
+      
+      .float-animation {
+          animation: float 3s ease-in-out infinite;
+      }
+      
+      /* Pulse animation for ping */
+      @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 5px rgba(34, 197, 94, 0.5); }
+          50% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.8); }
+      }
+      
+      .pulse-glow {
+          animation: pulse-glow 2s ease-in-out infinite;
+      }
+      
+      /* Flag hover effect */
+      .flag-hover {
+          transition: all 0.3s ease;
+      }
+      
+      .flag-hover:hover {
+          transform: scale(1.1);
+          filter: brightness(1.2);
+      }
+      
+      /* Notification slide in */
+      @keyframes slideInRight {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+      }
+      
+      .slide-in {
+          animation: slideInRight 0.5s ease-out;
       }
     </style>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
     <script>
       tailwind.config = {
         darkMode: 'selector',
+        theme: {
+          extend: {
+            colors: {
+              'luxury': {
+                50: '#f8fafc',
+                100: '#f1f5f9',
+                200: '#e2e8f0',
+                300: '#cbd5e1',
+                400: '#94a3b8',
+                500: '#64748b',
+                600: '#475569',
+                700: '#334155',
+                800: '#1e293b',
+                900: '#0f172a',
+              }
+            }
+          }
+        }
       }
     </script>
   </head>
-  <body class="bg-white dark:bg-neutral-800 bg-fixed">
+  <body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen text-white">
     <!-- Notification -->
-    <div
-      id="notification-badge"
-      class="fixed z-50 opacity-0 transition-opacity ease-in-out duration-300 mt-9 mr-6 right-0 p-3 max-w-sm bg-white rounded-xl border border-2 border-neutral-800 flex items-center gap-x-4"
-    >
+    <div id="notification-badge" class="fixed z-50 opacity-0 transition-all duration-500 mt-4 mr-4 right-0 p-4 max-w-sm glass rounded-2xl flex items-center gap-4 slide-in">
       <div class="shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#171717" class="size-6">
-          <path
-            d="M5.85 3.5a.75.75 0 0 0-1.117-1 9.719 9.719 0 0 0-2.348 4.876.75.75 0 0 0 1.479.248A8.219 8.219 0 0 1 5.85 3.5ZM19.267 2.5a.75.75 0 1 0-1.118 1 8.22 8.22 0 0 1 1.987 4.124.75.75 0 0 0 1.48-.248A9.72 9.72 0 0 0 19.266 2.5Z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M12 2.25A6.75 6.75 0 0 0 5.25 9v.75a8.217 8.217 0 0 1-2.119 5.52.75.75 0 0 0 .298 1.206c1.544.57 3.16.99 4.831 1.243a3.75 3.75 0 1 0 7.48 0 24.583 24.583 0 0 0 4.83-1.244.75.75 0 0 0 .298-1.205 8.217 8.217 0 0 1-2.118-5.52V9A6.75 6.75 0 0 0 12 2.25ZM9.75 18c0-.034 0-.067.002-.1a25.05 25.05 0 0 0 4.496 0l.002.1a2.25 2.25 0 1 1-4.5 0Z"
-            clip-rule="evenodd"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#22c55e" class="size-6">
+          <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
         </svg>
       </div>
       <div>
-        <div class="text-md font-bold text-blue-500">Berhasil!</div>
-        <p class="text-sm text-neutral-800">Akun berhasil disalin</p>
+        <div class="text-lg font-bold text-green-400">Berhasil!</div>
+        <p class="text-sm text-gray-300">Akun berhasil disalin ke clipboard</p>
       </div>
     </div>
-    <!-- Select Country -->
-    <div>
-      <div
-        class="h-full fixed top-0 w-14 bg-white dark:bg-neutral-800 border-r-2 border-neutral-800 dark:border-white z-20 overflow-y-scroll scrollbar-hide"
-      >
-        <div class="text-2xl flex flex-col items-center h-full gap-2">
-          PLACEHOLDER_BENDERA_NEGARA
-        </div>
-      </div>
-    </div>
-    <!-- Main -->
-    <div id="container-header">
-      <div id="container-info" class="bg-amber-400 border-2 border-neutral-800 text-right px-5">
-        <div class="flex justify-end gap-3 text-sm">
-          <p id="container-info-ip">IP: 127.0.0.1</p>
-          <p id="container-info-country">Country: Indonesia</p>
-          <p id="container-info-isp">ISP: Localhost</p>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div
-        id="container-title"
-        class="sticky bg-white dark:bg-neutral-800 border-b-2 border-neutral-800 dark:border-white z-10 py-6 w-screen"
-      >
-        <h1 class="text-xl text-center text-neutral-800 dark:text-white">
-          PLACEHOLDER_JUDUL
-        </h1>
-      </div>
-      <div class="flex gap-6 pt-10 w-screen justify-center">
-        PLACEHOLDER_PROXY_GROUP
-      </div>
 
-      <!-- Pagination -->
-      <nav id="container-pagination" class="w-screen mt-8 sticky bottom-0 right-0 left-0 transition -translate-y-6 z-20">
+    <!-- Header -->
+    <header class="gradient-bg p-6 shadow-2xl">
+      <div class="container mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 bg-clip-text text-transparent">
+          🌟 DASBOR PROXY 🌟
+        </h1>
+        <p class="text-center text-gray-200 text-lg">Premium Proxy Management Dashboard</p>
+      </div>
+    </header>
+    <!-- Country Flags Section -->
+    <section class="py-6 px-4">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">🌍 Pilih Negara</h2>
+        <div class="glass rounded-2xl p-4">
+          <!-- Row 1 -->
+          <div class="flex gap-4 overflow-x-auto scrollbar-thin pb-2 mb-4">
+            PLACEHOLDER_BENDERA_NEGARA_ROW1
+          </div>
+          <!-- Row 2 -->
+          <div class="flex gap-4 overflow-x-auto scrollbar-thin pb-2">
+            PLACEHOLDER_BENDERA_NEGARA_ROW2
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Proxy Information Section -->
+    <section class="py-6 px-4">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">🚀 Server Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          PLACEHOLDER_PROXY_GROUP
+        </div>
+      </div>
+    </section>
+
+    <!-- Account Management Section -->
+    <section class="py-6 px-4">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">📋 Akun yang Sudah Dibuat</h2>
+        <div class="glass rounded-2xl p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-gray-600">
+                  <th class="text-left py-3 px-4">No</th>
+                  <th class="text-left py-3 px-4">Negara</th>
+                  <th class="text-left py-3 px-4">Protokol</th>
+                  <th class="text-left py-3 px-4">IP:Port</th>
+                  <th class="text-left py-3 px-4">Status</th>
+                  <th class="text-left py-3 px-4">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="account-list">
+                PLACEHOLDER_ACCOUNT_LIST
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Traffic Chart Section -->
+    <section class="py-6 px-4">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold mb-4 text-center text-purple-300">📊 Grafik Lalu Lintas</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Traffic Chart -->
+          <div class="glass rounded-2xl p-6">
+            <h3 class="text-lg font-semibold mb-4 text-center">📈 Traffic Usage (24h)</h3>
+            <canvas id="trafficChart" width="400" height="200"></canvas>
+          </div>
+          
+          <!-- Connection Stats -->
+          <div class="glass rounded-2xl p-6">
+            <h3 class="text-lg font-semibold mb-4 text-center">🔗 Connection Statistics</h3>
+            <div class="space-y-4">
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Total Connections:</span>
+                <span class="text-2xl font-bold text-green-400">1,247</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Active Now:</span>
+                <span class="text-2xl font-bold text-blue-400">89</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Data Transferred:</span>
+                <span class="text-2xl font-bold text-purple-400">2.4 TB</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-gray-400">Uptime:</span>
+                <span class="text-2xl font-bold text-yellow-400">99.9%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pagination -->
+    <nav id="container-pagination" class="py-6 px-4">
+      <div class="container mx-auto">
         <ul class="flex justify-center space-x-4">
           PLACEHOLDER_PAGE_BUTTON
         </ul>
-      </nav>
-    </div>
+      </div>
+    </nav>
 
     <div id="container-window" class="hidden">
       <!-- Windows -->
@@ -1259,58 +1414,93 @@ let baseHTML = `
       </div>
     </div>
 
-    <footer>
-      <div class="fixed bottom-3 right-3 flex flex-col gap-1 z-50">
-        <a href="${DONATE_LINK}" target="_blank">
-          <button class="bg-green-500 rounded-full border-2 border-neutral-800 p-1 block">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path
-                d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 0 1-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004ZM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 0 1-.921.42Z"
-              />
-              <path
-                fill-rule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v.816a3.836 3.836 0 0 0-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 0 1-.921-.421l-.879-.66a.75.75 0 0 0-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 0 0 1.5 0v-.81a4.124 4.124 0 0 0 1.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 0 0-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 0 0 .933-1.175l-.415-.33a3.836 3.836 0 0 0-1.719-.755V6Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
-        </a>
-        <button onclick="toggleWildcardsWindow()" class="bg-indigo-400 rounded-full border-2 border-neutral-800 p-1 PLACEHOLDER_API_READY">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"
-            />
-          </svg>
-        </button>
-        <button onclick="toggleDarkMode()" class="bg-amber-400 rounded-full border-2 border-neutral-800 p-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
-            ></path>
-          </svg>
-        </button>
+    <!-- Footer -->
+    <footer class="gradient-bg py-8 mt-12">
+      <div class="container mx-auto text-center">
+        <p class="text-gray-300">© 2024 DASBOR PROXY - Premium Proxy Management</p>
+        <p class="text-sm text-gray-400 mt-2">Powered by Cloudflare Workers</p>
       </div>
     </footer>
 
+    <!-- Floating Action Buttons -->
+    <div class="fixed bottom-6 right-6 flex flex-col gap-3 z-50">
+      <a href="${DONATE_LINK}" target="_blank">
+        <button class="gradient-button rounded-full p-3 shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6 text-white">
+            <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 0 1-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004ZM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 0 1-.921.42Z"/>
+            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v.816a3.836 3.836 0 0 0-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 0 1-.921-.421l-.879-.66a.75.75 0 0 0-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 0 0 1.5 0v-.81a4.124 4.124 0 0 0 1.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 0 0-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 0 0 .933-1.175l-.415-.33a3.836 3.836 0 0 0-1.719-.755V6Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </a>
+      <button onclick="toggleWildcardsWindow()" class="glass rounded-full p-3 shadow-lg PLACEHOLDER_API_READY">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-white">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"/>
+        </svg>
+      </button>
+      <button onclick="toggleDarkMode()" class="glass rounded-full p-3 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 text-white">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/>
+        </svg>
+      </button>
+    </div>
+
     <script>
+      // Initialize Chart.js
+      let trafficChart = null;
+      
+      function initTrafficChart() {
+        const ctx = document.getElementById('trafficChart');
+        if (ctx && typeof Chart !== 'undefined') {
+          trafficChart = new Chart(ctx.getContext('2d'), {
+            type: 'line',
+            data: {
+              labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+              datasets: [{
+                label: 'VLESS Traffic (GB)',
+                data: [12, 19, 3, 5, 2, 3, 15],
+                borderColor: 'rgb(139, 92, 246)',
+                backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                tension: 0.4
+              }, {
+                label: 'TROJAN Traffic (GB)',
+                data: [2, 3, 20, 5, 1, 4, 8],
+                borderColor: 'rgb(6, 182, 212)',
+                backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                tension: 0.4
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: 'white'
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: 'white'
+                  },
+                  grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                  }
+                },
+                y: {
+                  ticks: {
+                    color: 'white'
+                  },
+                  grid: {
+                    color: 'rgba(255, 255, 255, 0.1)'
+                  }
+                }
+              }
+            }
+          });
+        }
+      }
+
       // Shared
       const rootDomain = "${serviceName}.${rootDomain}";
       const notification = document.getElementById("notification-badge");
@@ -1537,9 +1727,74 @@ let baseHTML = `
         });
       }
 
+      // Protocol selection functionality
+      function initProtocolSelection() {
+        // Protocol buttons
+        const protocolBtns = document.querySelectorAll('.protocol-btn');
+        protocolBtns.forEach(btn => {
+          btn.addEventListener('click', function() {
+            const protocol = this.dataset.protocol;
+            const card = this.closest('.gradient-card');
+            
+            // Reset all buttons in this card
+            card.querySelectorAll('.protocol-btn').forEach(b => {
+              b.classList.remove('gradient-button');
+              b.classList.add('bg-gray-600');
+            });
+            
+            // Activate clicked button
+            this.classList.remove('bg-gray-600');
+            this.classList.add('gradient-button');
+            
+            // Show/hide options
+            card.querySelectorAll('.protocol-options').forEach(opt => {
+              opt.classList.add('hidden');
+            });
+            
+            const optionsId = protocol + '-options-' + Array.from(card.parentNode.children).indexOf(card);
+            const options = document.getElementById(optionsId);
+            if (options) {
+              options.classList.remove('hidden');
+            }
+          });
+        });
+
+        // Copy functionality
+        const copyBtns = document.querySelectorAll('.copy-btn');
+        copyBtns.forEach(btn => {
+          btn.addEventListener('click', function() {
+            const config = this.dataset.config;
+            navigator.clipboard.writeText(config).then(() => {
+              showNotification();
+            });
+          });
+        });
+
+        // Flag selection
+        const flagItems = document.querySelectorAll('.flag-item');
+        flagItems.forEach(item => {
+          item.addEventListener('click', function() {
+            // Remove active state from all flags
+            flagItems.forEach(f => f.classList.remove('ring-4', 'ring-purple-400'));
+            // Add active state to clicked flag
+            this.classList.add('ring-4', 'ring-purple-400');
+          });
+        });
+      }
+
+      function showNotification() {
+        const notification = document.getElementById('notification-badge');
+        notification.classList.remove('opacity-0');
+        setTimeout(() => {
+          notification.classList.add('opacity-0');
+        }, 3000);
+      }
+
       window.onload = () => {
         checkGeoip();
         checkProxy();
+        initTrafficChart();
+        initProtocolSelection();
         // checkRegion();
 
         const observer = lozad(".lozad", {
@@ -1592,52 +1847,75 @@ class Document {
 
   buildProxyGroup() {
     let proxyGroupElement = "";
-    proxyGroupElement += `<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">`;
     for (let i = 0; i < this.proxies.length; i++) {
       const proxyData = this.proxies[i];
 
-      // Assign proxies
-      proxyGroupElement += `<div class="lozad scale-95 mb-2 bg-white dark:bg-neutral-800 transition-transform duration-200 rounded-lg p-4 w-60 border-2 border-neutral-800">`;
-      proxyGroupElement += `  <div id="countryFlag" class="absolute -translate-y-9 -translate-x-2 border-2 border-neutral-800 rounded-full overflow-hidden"><img width="32" src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" /></div>`;
-      proxyGroupElement += `  <div>`;
-      proxyGroupElement += `    <div id="ping-${i}" class="animate-pulse text-xs font-semibold dark:text-white">Idle ${proxyData.proxyIP}:${proxyData.proxyPort}</div>`;
+      // Modern proxy card with glassmorphism
+      proxyGroupElement += `<div class="gradient-card rounded-2xl p-6 float-animation lozad scale-95">`;
+      proxyGroupElement += `  <div class="flex items-center justify-between mb-4">`;
+      proxyGroupElement += `    <div class="flex items-center gap-3">`;
+      proxyGroupElement += `      <img src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" alt="${proxyData.country}" class="w-8 h-8 rounded-full" />`;
+      proxyGroupElement += `      <div>`;
+      proxyGroupElement += `        <h3 class="font-bold text-lg">${proxyData.country} Premium</h3>`;
+      proxyGroupElement += `        <p class="text-sm text-gray-400">${proxyData.org}</p>`;
+      proxyGroupElement += `      </div>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `    <div class="text-right">`;
+      proxyGroupElement += `      <div id="ping-${i}" class="text-sm font-semibold text-green-400 pulse-glow">Checking...</div>`;
+      proxyGroupElement += `    </div>`;
       proxyGroupElement += `  </div>`;
-      proxyGroupElement += `  <div class="rounded py-1 px-2 bg-amber-400 dark:bg-neutral-800 dark:border-2 dark:border-amber-400">`;
-      proxyGroupElement += `    <h5 class="font-bold text-md text-neutral-900 dark:text-white mb-1 overflow-x-scroll scrollbar-hide text-nowrap">${proxyData.org}</h5>`;
-      proxyGroupElement += `    <div class="text-neutral-900 dark:text-white text-sm">`;
-      proxyGroupElement += `      <p>IP: ${proxyData.proxyIP}</p>`;
-      proxyGroupElement += `      <p>Port: ${proxyData.proxyPort}</p>`;
-      proxyGroupElement += `      <div id="container-region-check-${i}">`;
-      proxyGroupElement += `        <input id="config-sample-${i}" class="hidden" type="text" value="${proxyData.list[0]}">`;
+      proxyGroupElement += `  <div class="space-y-2 mb-4">`;
+      proxyGroupElement += `    <div class="flex justify-between">`;
+      proxyGroupElement += `      <span class="text-gray-400">IP Address:</span>`;
+      proxyGroupElement += `      <span class="font-mono text-sm">${proxyData.proxyIP}</span>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `    <div class="flex justify-between">`;
+      proxyGroupElement += `      <span class="text-gray-400">Port:</span>`;
+      proxyGroupElement += `      <span class="font-mono text-sm">${proxyData.proxyPort}</span>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `    <div class="flex justify-between">`;
+      proxyGroupElement += `      <span class="text-gray-400">Status:</span>`;
+      proxyGroupElement += `      <span class="text-green-400 font-semibold">🟢 Active</span>`;
+      proxyGroupElement += `    </div>`;
+      proxyGroupElement += `  </div>`;
+      
+      // Protocol Selection
+      proxyGroupElement += `  <div class="mb-4">`;
+      proxyGroupElement += `    <div class="flex gap-2 mb-2">`;
+      proxyGroupElement += `      <button class="protocol-btn gradient-button text-white px-4 py-2 rounded-lg text-sm font-semibold" data-protocol="vless">`;
+      proxyGroupElement += `        🔒 VLESS`;
+      proxyGroupElement += `      </button>`;
+      proxyGroupElement += `      <button class="protocol-btn bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-semibold" data-protocol="trojan">`;
+      proxyGroupElement += `        🛡️ TROJAN`;
+      proxyGroupElement += `      </button>`;
+      proxyGroupElement += `    </div>`;
+      
+      // VLESS Options
+      proxyGroupElement += `    <div id="vless-options-${i}" class="protocol-options">`;
+      proxyGroupElement += `      <div class="flex gap-2">`;
+      proxyGroupElement += `        <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="vless-tls" data-config="${proxyData.list[0]}">`;
+      proxyGroupElement += `          🔐 TLS`;
+      proxyGroupElement += `        </button>`;
+      proxyGroupElement += `        <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="vless-ntls" data-config="${proxyData.list[3]}">`;
+      proxyGroupElement += `          🔓 NTLS`;
+      proxyGroupElement += `        </button>`;
+      proxyGroupElement += `      </div>`;
+      proxyGroupElement += `    </div>`;
+      
+      // TROJAN Options
+      proxyGroupElement += `    <div id="trojan-options-${i}" class="protocol-options hidden">`;
+      proxyGroupElement += `      <div class="flex gap-2">`;
+      proxyGroupElement += `        <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="trojan-tls" data-config="${proxyData.list[1]}">`;
+      proxyGroupElement += `          🔐 TLS`;
+      proxyGroupElement += `        </button>`;
+      proxyGroupElement += `        <button class="copy-btn gradient-button text-white px-3 py-1 rounded text-xs" data-type="trojan-ntls" data-config="${proxyData.list[4]}">`;
+      proxyGroupElement += `          🔓 NTLS`;
+      proxyGroupElement += `        </button>`;
       proxyGroupElement += `      </div>`;
       proxyGroupElement += `    </div>`;
       proxyGroupElement += `  </div>`;
-      proxyGroupElement += `  <div class="flex flex-col gap-2 mt-3 text-sm">`;
-      for (let x = 0; x < proxyData.list.length; x++) {
-        const indexName = [
-          `${reverse("NAJORT")} TLS`,
-          `${reverse("SSELV")} TLS`,
-          `${reverse("SS")} TLS`,
-          `${reverse("NAJORT")} NTLS`,
-          `${reverse("SSELV")} NTLS`,
-          `${reverse("SS")} NTLS`,
-        ];
-        const proxy = proxyData.list[x];
-
-        if (x % 2 == 0) {
-          proxyGroupElement += `<div class="flex gap-2 justify-around w-full">`;
-        }
-
-        proxyGroupElement += `<button class="bg-blue-500 dark:bg-neutral-800 dark:border-2 dark:border-blue-500 rounded p-1 w-full text-white" onclick="copyToClipboard('${proxy}')">${indexName[x]}</button>`;
-
-        if (x % 2 == 1) {
-          proxyGroupElement += `</div>`;
-        }
-      }
-      proxyGroupElement += `  </div>`;
       proxyGroupElement += `</div>`;
     }
-    proxyGroupElement += `</div>`;
 
     this.html = this.html.replaceAll("PLACEHOLDER_PROXY_GROUP", `${proxyGroupElement}`);
   }
@@ -1649,14 +1927,36 @@ class Document {
       flagList.push(proxy.country);
     }
 
-    let flagElement = "";
-    for (const flag of new Set(flagList)) {
-      flagElement += `<a href="/sub?cc=${flag}${
-        proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""
-      }" class="py-1" ><img width=20 src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" /></a>`;
+    const uniqueFlags = [...new Set(flagList)];
+    const midPoint = Math.ceil(uniqueFlags.length / 2);
+    
+    let flagElementRow1 = "";
+    let flagElementRow2 = "";
+    
+    // Row 1
+    for (let i = 0; i < midPoint; i++) {
+      const flag = uniqueFlags[i];
+      flagElementRow1 += `<div class="flag-item flex-shrink-0 text-center">`;
+      flagElementRow1 += `<a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg block">`;
+      flagElementRow1 += `<img src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag}" class="w-full h-full object-cover" />`;
+      flagElementRow1 += `</a>`;
+      flagElementRow1 += `<p class="text-xs mt-1 text-gray-300">${flag}</p>`;
+      flagElementRow1 += `</div>`;
+    }
+    
+    // Row 2
+    for (let i = midPoint; i < uniqueFlags.length; i++) {
+      const flag = uniqueFlags[i];
+      flagElementRow2 += `<div class="flag-item flex-shrink-0 text-center">`;
+      flagElementRow2 += `<a href="/sub?cc=${flag}${proxyBankUrl ? "&proxy-list=" + proxyBankUrl : ""}" class="flag-hover w-16 h-16 rounded-full overflow-hidden border-2 border-purple-400 shadow-lg block">`;
+      flagElementRow2 += `<img src="https://hatscripts.github.io/circle-flags/flags/${flag.toLowerCase()}.svg" alt="${flag}" class="w-full h-full object-cover" />`;
+      flagElementRow2 += `</a>`;
+      flagElementRow2 += `<p class="text-xs mt-1 text-gray-300">${flag}</p>`;
+      flagElementRow2 += `</div>`;
     }
 
-    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA", flagElement);
+    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA_ROW1", flagElementRow1);
+    this.html = this.html.replaceAll("PLACEHOLDER_BENDERA_NEGARA_ROW2", flagElementRow2);
   }
 
   addPageButton(text, link, isDisabled) {
@@ -1667,9 +1967,39 @@ class Document {
     this.html = this.html.replaceAll("PLACEHOLDER_PAGE_BUTTON", `${pageButton}\nPLACEHOLDER_PAGE_BUTTON`);
   }
 
+  buildAccountList() {
+    let accountListElement = "";
+    for (let i = 0; i < Math.min(this.proxies.length, 5); i++) {
+      const proxyData = this.proxies[i];
+      const protocol = i % 2 === 0 ? "VLESS TLS" : "TROJAN NTLS";
+      const protocolClass = i % 2 === 0 ? "bg-purple-600" : "bg-red-600";
+      
+      accountListElement += `<tr class="border-b border-gray-700">`;
+      accountListElement += `<td class="py-3 px-4">${i + 1}</td>`;
+      accountListElement += `<td class="py-3 px-4 flex items-center gap-2">`;
+      accountListElement += `<img src="https://hatscripts.github.io/circle-flags/flags/${proxyData.country.toLowerCase()}.svg" alt="${proxyData.country}" class="w-5 h-5" />`;
+      accountListElement += `${proxyData.country}`;
+      accountListElement += `</td>`;
+      accountListElement += `<td class="py-3 px-4">`;
+      accountListElement += `<span class="${protocolClass} px-2 py-1 rounded text-xs">${protocol}</span>`;
+      accountListElement += `</td>`;
+      accountListElement += `<td class="py-3 px-4 font-mono">${proxyData.proxyIP}:${proxyData.proxyPort}</td>`;
+      accountListElement += `<td class="py-3 px-4">`;
+      accountListElement += `<span class="text-green-400">🟢 Active</span>`;
+      accountListElement += `</td>`;
+      accountListElement += `<td class="py-3 px-4">`;
+      accountListElement += `<button class="copy-btn bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs" data-config="${proxyData.list[0]}">Copy</button>`;
+      accountListElement += `</td>`;
+      accountListElement += `</tr>`;
+    }
+    
+    this.html = this.html.replaceAll("PLACEHOLDER_ACCOUNT_LIST", accountListElement);
+  }
+
   build() {
     this.buildProxyGroup();
     this.buildCountryFlag();
+    this.buildAccountList();
 
     this.html = this.html.replaceAll("PLACEHOLDER_API_READY", isApiReady ? "block" : "hidden");
 
